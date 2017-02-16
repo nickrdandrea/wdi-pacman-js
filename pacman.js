@@ -1,6 +1,7 @@
 // Setup initial game stats
 var score = 0;
 var lives = 2;
+var powerPellets = 4;
 
 
 // Define your ghosts here
@@ -54,16 +55,17 @@ function clearScreen() {
 }
 
 function displayStats() {
-  console.log('Score: ' + score + '     Lives: ' + lives);
+  console.log('Score: ' + score + '     Lives: ' + lives + '\n\nPower-Pellets: ' + powerPellets);
 }
 
 function displayMenu() {
   console.log('\n\nSelect Option:\n');  // each \n creates a new line
   console.log('(d) Eat Dot');
-  console.log('(1) Eat Inky');
-  console.log('(2) Eat Blinky');
-  console.log('(3) Eat Pinky');
-  console.log('(4) Eat Clyde');
+  if (powerPellets > 0) {console.log('(p) Eat Power-Pellet')};
+  console.log('(1) Eat ' + ghostMenu(0));
+  console.log('(2) Eat ' + ghostMenu(1));
+  console.log('(3) Eat ' + ghostMenu(2));
+  console.log('(4) Eat ' + ghostMenu(3));
   console.log('(q) Quit');
 }
 
@@ -83,7 +85,8 @@ function eatGhost(ghost) {
   if (ghost.edible) {
     console.log('\nChomp!');
     console.log('\n' + ghost.name + ' was eaten!');
-    score += 10;
+    ghost.edible = false;
+    score += 200;
   } else {
     console.log('\nChomped!');
     console.log('\n' + ghost.name + ' has eaten you!');
@@ -92,8 +95,23 @@ function eatGhost(ghost) {
   }
 }
 
+function eatPellet() {
+  for (var i = 0; i < ghosts.length; i++) {
+    ghosts[i].edible = true;
+  }
+  score += 50
+  powerPellets -= 1
+}
+
 function lifeCheck() {
   if (lives <= 0) {process.exit()};
+}
+
+function ghostMenu(i) {
+  var s = ghosts[i].name + " ("
+  if (ghosts[i].edible) {s += "edible)"}
+    else {s += "inedible)"}
+  return s;
 }
 
 // Process Player's Input
@@ -105,6 +123,10 @@ function processInput(key) {
       break;
     case 'd':
       eatDot();
+      break;
+    case 'p':
+      if (powerPellets <= 0) {console.log('\nNo Power-Pellets left!');}
+      else {eatPellet();}
       break;
     case '1':
     case '2':
