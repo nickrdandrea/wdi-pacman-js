@@ -88,10 +88,13 @@ function eatGhost(ghost) {
     console.log('\nChomped!');
     console.log('\n' + ghost.name + ' has eaten you!');
     lives -= 1;
+    lifeCheck();
   }
 }
 
-
+function lifeCheck() {
+  if (lives <= 0) {process.exit()};
+}
 
 // Process Player's Input
 function processInput(key) {
